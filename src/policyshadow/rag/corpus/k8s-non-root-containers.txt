@@ -1,0 +1,6 @@
+Running containers as a non-root user limits the impact of a container
+breakout, since the process inside the container does not have root
+privileges even if it escapes container isolation. The Pod Security
+Standards Restricted profile requires runAsNonRoot to be set to true.
+This is one of the most commonly enforced baseline security controls in
+production Kubernetes clusters.

@@ -1,0 +1,7 @@
+The restrict-privileged-containers Kyverno rule blocks any Pod whose
+container sets the privileged flag to true in its security context.
+Deploying this rule in Audit mode first lets a team see which existing
+workloads would be blocked before switching to Enforce mode. The usual
+fix is to remove the privileged flag and grant only the specific Linux
+capabilities the container actually needs, rather than full host-level
+access.

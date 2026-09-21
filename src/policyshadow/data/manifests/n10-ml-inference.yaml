@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml-inference
+  namespace: ml
+spec:
+  containers:
+    - name: app
+      image: ml-server:1.0
+      securityContext:
+        runAsNonRoot: true

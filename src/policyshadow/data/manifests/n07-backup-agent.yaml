@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backup-agent
+  namespace: ops
+spec:
+  containers:
+    - name: app
+      image: backup-agent:1.2
+      securityContext:
+        privileged: true

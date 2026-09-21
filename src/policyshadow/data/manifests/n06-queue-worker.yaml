@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: queue-worker
+  namespace: queue
+spec:
+  containers:
+    - name: app
+      image: rabbitmq-worker:3.13
+      securityContext:
+        privileged: true

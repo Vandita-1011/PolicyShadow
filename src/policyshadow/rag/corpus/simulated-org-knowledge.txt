@@ -1,0 +1,5 @@
+[SIMULATED ORGANIZATIONAL KNOWLEDGE — NOT REAL COMPANY DATA]
+Platform team note: privileged containers have historically only been
+needed by two legacy monitoring workloads in this cluster; both are
+scheduled for replacement. Non-root enforcement was piloted in the
+staging namespace with no reported application breakage.

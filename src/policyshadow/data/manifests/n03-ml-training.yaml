@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml-training
+  namespace: ml
+spec:
+  containers:
+    - name: app
+      image: ml-trainer:1.0
+      securityContext:
+        privileged: true
+        runAsNonRoot: true

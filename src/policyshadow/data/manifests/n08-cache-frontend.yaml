@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cache-frontend
+  namespace: cache
+spec:
+  containers:
+    - name: app
+      image: memcached:1.6
+      securityContext:
+        runAsNonRoot: true

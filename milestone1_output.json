@@ -1,0 +1,290 @@
+[
+  {
+    "violation_id": "d684f833-ac8b-497a-9edc-289e4dc9c8c7",
+    "record_id": "r02",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "debug-app",
+    "namespace": "default",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902606,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "default",
+          "name": "debug-app",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "da3579da-af31-415b-8e76-76f9f2b71ad9",
+    "record_id": "r04",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "frontend-multi",
+    "namespace": "web",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/1/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902607,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "web",
+          "name": "frontend-multi",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/1/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "69017936-152b-4eec-8eee-453eb3bdf47f",
+    "record_id": "r06",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "payments-debug",
+    "namespace": "payments",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902608,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "payments",
+          "name": "payments-debug",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "8c98c923-ed51-48b2-b2f3-4d4ba7378c31",
+    "record_id": "r08",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "etl-job-privileged-init",
+    "namespace": "batch",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/initContainers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902610,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "batch",
+          "name": "etl-job-privileged-init",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/initContainers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "1b28a41f-f7a7-411e-a93f-9351b340874b",
+    "record_id": "r10",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "debug-tools",
+    "namespace": "monitoring",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902611,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "monitoring",
+          "name": "debug-tools",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "4b94efa1-ddd7-4252-99db-21027d7300f6",
+    "record_id": "r12",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "redis-debug",
+    "namespace": "default",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902612,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "default",
+          "name": "redis-debug",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "629de8b0-aae9-4edb-bd18-46558d3c9b4e",
+    "record_id": "r14",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "fluentd-debug",
+    "namespace": "logging",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902613,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "logging",
+          "name": "fluentd-debug",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  },
+  {
+    "violation_id": "db2ec72f-3e35-4809-a99e-28295e051006",
+    "record_id": "r16",
+    "policy_id": "p1",
+    "rule_name": "privileged-containers",
+    "resource_kind": "Pod",
+    "resource_name": "memcached-privileged",
+    "namespace": "cache",
+    "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+    "severity": "high",
+    "raw_result": {
+      "source": "kyverno",
+      "policy": "restrict-privileged-containers",
+      "rule": "privileged-containers",
+      "category": "Pod Security Standards (Baseline)",
+      "severity": "high",
+      "timestamp": {
+        "seconds": 1789902615,
+        "nanos": 0
+      },
+      "result": "fail",
+      "scored": true,
+      "resources": [
+        {
+          "kind": "Pod",
+          "namespace": "cache",
+          "name": "memcached-privileged",
+          "apiVersion": "v1"
+        }
+      ],
+      "message": "validation error: Privileged mode is disallowed. The fields spec.containers[*].securityContext.privileged and spec.initContainers[*].securityContext.privileged must be unset or set to `false`. rule privileged-containers failed at path /spec/containers/0/securityContext/privileged/",
+      "properties": {
+        "process": "background scan"
+      }
+    }
+  }
+]

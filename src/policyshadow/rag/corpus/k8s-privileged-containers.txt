@@ -1,0 +1,7 @@
+Privileged containers run with nearly all the same permissions as
+processes on the host. A privileged container can access host devices,
+modify kernel parameters, and bypass most container isolation. Kubernetes
+recommends avoiding privileged containers unless absolutely required,
+since a compromised privileged container can lead to full node
+compromise. The Pod Security Standards Baseline profile disallows
+privileged containers.

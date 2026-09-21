@@ -1,0 +1,7 @@
+The require-non-root Kyverno rule rejects any Pod that does not
+explicitly declare runAsNonRoot as true for every container. Workloads
+with no security context at all also fail this check, since the field
+must be present and set to true, not merely absent. Fixing this usually
+means adding a security context block with runAsNonRoot set to true and
+confirming the container image actually supports running as a non-root
+user.

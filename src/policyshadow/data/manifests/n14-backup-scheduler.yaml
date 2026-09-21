@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backup-scheduler
+  namespace: ops
+spec:
+  containers:
+    - name: app
+      image: backup-scheduler:1.2

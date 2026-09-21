@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gateway-debug
+  namespace: gateway
+spec:
+  containers:
+    - name: app
+      image: envoy:1.31
+      securityContext:
+        privileged: true

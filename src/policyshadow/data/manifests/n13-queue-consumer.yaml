@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: queue-consumer
+  namespace: queue
+spec:
+  containers:
+    - name: app
+      image: rabbitmq-consumer:3.13
+      securityContext:
+        privileged: false

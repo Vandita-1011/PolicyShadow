@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: search-api
+  namespace: search
+spec:
+  containers:
+    - name: app
+      image: elasticsearch:8.15
+      securityContext:
+        privileged: false

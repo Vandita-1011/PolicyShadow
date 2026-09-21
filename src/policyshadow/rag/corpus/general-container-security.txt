@@ -1,0 +1,5 @@
+General container hardening guidance includes: avoid privileged mode,
+run as a non-root user, use read-only root filesystems where possible,
+drop unnecessary Linux capabilities, and avoid mounting sensitive host
+paths. These practices reduce the impact of a compromised container and
+are commonly grouped together under Pod Security Standards.

@@ -1,0 +1,9 @@
+{
+  "expected_violation_count": 15,
+  "expected_violating_record_ids": [
+    "r02", "r04", "r06", "r08", "r10", "r12", "r14", "r16",
+    "n01-cache-debug", "n02-billing-worker", "n03-ml-training",
+    "n04-search-indexer", "n05-gateway-debug", "n06-queue-worker",
+    "n07-backup-agent"
+  ]
+}
