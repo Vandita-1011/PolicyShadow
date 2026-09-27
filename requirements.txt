@@ -3,3 +3,7 @@ pyyaml
 pytest
 sentence-transformers
 groq
+sqlalchemy
+psycopg
+psycopg-binary
+python-dotenv
