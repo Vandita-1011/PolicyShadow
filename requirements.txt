@@ -7,3 +7,5 @@ sqlalchemy
 psycopg
 psycopg-binary
 python-dotenv
+fastapi
+uvicorn
