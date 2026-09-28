@@ -1,6 +1,6 @@
 """Generates a phased rollout recommendation for a cluster. NOT a risk score."""
 
-from policyshadow.explanation.explainer import MODEL, _get_client
+from policyshadow.explanation.explainer import MODEL, TEMPERATURE, _get_client
 
 CATEGORIES = [
     "Proceed toward Enforce",
@@ -78,7 +78,7 @@ def recommend_rollout(cluster: dict, explanation: str, total_records: int) -> di
 
     for _ in range(MAX_ATTEMPTS):
         text = _get_client().chat.completions.create(
-            model=MODEL, messages=messages
+            model=MODEL, messages=messages, temperature=TEMPERATURE
         ).choices[0].message.content
         category_line = next(
             (l for l in text.strip().split("\n") if l.startswith("CATEGORY:")), ""

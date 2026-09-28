@@ -6,6 +6,7 @@ import re
 from groq import Groq
 
 MODEL = "openai/gpt-oss-120b"
+TEMPERATURE = 0
 
 _client = None
 
@@ -49,6 +50,7 @@ def _normalize_citations(text: str) -> str:
 def explain_cluster(cluster: dict) -> str:
     response = _get_client().chat.completions.create(
         model=MODEL,
+        temperature=TEMPERATURE,
         messages=[{"role": "user", "content": _build_prompt(cluster)}],
     )
     return _normalize_citations(response.choices[0].message.content)

@@ -20,7 +20,7 @@ BAD = "CATEGORY: Proceed toward Enforce\nRATIONALE: bad"
 def _fake_client(responses):
     calls = []
 
-    def create(model, messages):
+    def create(model, messages, **kwargs):
         calls.append(list(messages))
         text = responses[len(calls) - 1]
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=text))])
@@ -71,3 +71,16 @@ def test_still_disallowed_after_retry_raises(monkeypatch):
     with pytest.raises(ValueError):
         recommend_rollout(CLUSTER, "explanation", 30)
     assert len(calls) == 2
+
+
+def test_recommendation_request_uses_zero_temperature(monkeypatch):
+    seen = {}
+
+    def create(model, messages, **kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=VALID))])
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)))
+    monkeypatch.setattr(recommender, "_get_client", lambda: client)
+    recommend_rollout(CLUSTER, "explanation", 30)
+    assert seen["temperature"] == 0
