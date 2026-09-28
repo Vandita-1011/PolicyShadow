@@ -16,7 +16,13 @@ def main(in_path: str, out_path: str) -> None:
     clusters = cluster_violations(violations, embeddings)
     packaged = build_cluster_evidence(clusters, violations)
     result = [
-        {k: c[k] for k in ("cluster_id", "rule_name", "violation_count", "evidence")}
+        {
+            "cluster_id": c["cluster_id"],
+            "rule_name": c["rule_name"],
+            "violation_count": c["violation_count"],
+            "evidence": c["evidence"],
+            "violation_ids": [v.violation_id for v in c["violations"]],
+        }
         for c in packaged
     ]
     with open(out_path, "w", encoding="utf-8") as f:
