@@ -1,0 +1,52 @@
+:root {
+  --color-bg: #F7F3EC;
+  --color-bg-card: #FFFFFF;
+  --color-text: #2B2620;
+  --color-text-muted: #6B6255;
+  --color-accent: #B5502F;
+  --color-accent-hover: #94401F;
+  --color-border: #E3DACB;
+  --risk-low: #6B8F71;
+  --risk-medium: #C08A2E;
+  --risk-high: #9B3B2E;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+button:hover { background: var(--color-accent-hover); }
+button:disabled { background: var(--color-text-muted); cursor: not-allowed; }

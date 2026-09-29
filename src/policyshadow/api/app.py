@@ -4,6 +4,7 @@ from functools import lru_cache
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from policyshadow.api.pipeline import run_full_pipeline
@@ -11,6 +12,13 @@ from policyshadow.persistence.postgres_repository import PostgresViolationReposi
 from policyshadow.persistence.run_store import RunStore
 
 app = FastAPI(title="PolicyShadow")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class DecisionRequest(BaseModel):
