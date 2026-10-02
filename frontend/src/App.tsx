@@ -1,45 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./theme.css";
-import { getHealth, getRuns, type HealthStatus, type RunSummary } from "./api";
+import { RunList } from "./RunList";
+import { RunDetailView } from "./RunDetailView";
 
 export default function App() {
-  const [health, setHealth] = useState<HealthStatus | null>(null);
-  const [runs, setRuns] = useState<RunSummary[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    getHealth().then(setHealth).catch((e) => setError(String(e)));
-    getRuns().then(setRuns).catch((e) => setError(String(e)));
-  }, []);
+  const [selectedRun, setSelectedRun] = useState<string | null>(null);
 
   return (
-    <div style={{ maxWidth: 640, margin: "3rem auto", padding: "0 1rem" }}>
-      <h1>PolicyShadow</h1>
-      <p style={{ color: "var(--color-text-muted)" }}>
-        Connectivity check — this is not the real dashboard yet.
-      </p>
-
-      <div className="card">
-        <h3>Backend health</h3>
-        {error && <p style={{ color: "var(--risk-high)" }}>Error: {error}</p>}
-        {!error && !health && <p>Loading...</p>}
-        {health && <p>Status: {health.status}</p>}
+    <div style={{ maxWidth: 760, margin: "0 auto", padding: "2.5rem 1.5rem" }}>
+      <div className="app-header">
+        <h1>PolicyShadow</h1>
+        <p className="app-tagline">
+          Decision support for safe Kubernetes admission policy rollout
+        </p>
       </div>
-
-      <div className="card">
-        <h3>Existing runs (real data from Postgres)</h3>
-        {!error && runs === null && <p>Loading...</p>}
-        {runs !== null && runs.length === 0 && <p>No runs yet.</p>}
-        {runs !== null && runs.length > 0 && (
-          <ul>
-            {runs.map((r) => (
-              <li key={r.run_id}>
-                {r.run_id} — {r.status} — {r.total_records} records — {r.created_at}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {selectedRun ? (
+        <RunDetailView runId={selectedRun} onBack={() => setSelectedRun(null)} />
+      ) : (
+        <RunList onSelect={setSelectedRun} />
+      )}
     </div>
   );
 }

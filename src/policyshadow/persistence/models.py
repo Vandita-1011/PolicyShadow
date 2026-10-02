@@ -71,3 +71,16 @@ class DecisionModel(Base):
     decision = Column(String, nullable=False)
     note = Column(Text, nullable=True)
     decided_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)
+
+class PolicyModel(Base):
+    __tablename__ = "policies"
+
+    policy_id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    category = Column(String, nullable=True)
+    rule_definition = Column(Text, nullable=True)
+    notes = Column(Text, nullable=True)
+    status = Column(String, nullable=False, default="active")
+    is_system = Column(String, nullable=False, default="false")
+    created_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)

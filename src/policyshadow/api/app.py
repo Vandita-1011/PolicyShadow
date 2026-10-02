@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from policyshadow.api.pipeline import run_full_pipeline
 from policyshadow.persistence.postgres_repository import PostgresViolationRepository
 from policyshadow.persistence.run_store import RunStore
+from policyshadow.persistence.policy_store import PolicyStore
 
 app = FastAPI(title="PolicyShadow")
 
@@ -21,9 +22,23 @@ app.add_middleware(
 )
 
 
+class PolicyCreateRequest(BaseModel):
+    name: str
+    description: str | None = None
+    category: str | None = None
+    rule_definition: str | None = None
+    notes: str | None = None
+    status: str = "active"
+
+
 class DecisionRequest(BaseModel):
     decision: Literal["approve", "reject"]
     note: str | None = None
+
+
+@lru_cache
+def _policy_store() -> PolicyStore:
+    return PolicyStore()
 
 
 @lru_cache
@@ -66,3 +81,28 @@ def decide(recommendation_id: str, body: DecisionRequest):
 def violations():
     repo = PostgresViolationRepository()
     return [v.model_dump(mode="json") for v in repo.get_all()]
+
+
+@app.get("/policies")
+def list_policies():
+    return _policy_store().list_policies()
+
+
+@app.post("/policies")
+def create_policy(body: PolicyCreateRequest):
+    return _policy_store().create_policy(
+        body.name, body.description, body.category,
+        body.rule_definition, body.notes, body.status,
+    )
+
+
+@app.get("/stats")
+def stats():
+    runs = _store().list_runs()
+    total_violations = sum(r["violation_count"] for r in runs)
+    return {
+        "total_runs": len(runs),
+        "total_policies": len(_policy_store().list_policies()),
+        "total_violations_detected": total_violations,
+        "pending_decisions": _store().count_pending_decisions(),
+    }

@@ -95,14 +95,42 @@ class RunStore:
 
     def list_runs(self) -> list[dict]:
         with SessionLocal() as session:
-            rows = session.query(RunModel).order_by(RunModel.created_at.desc()).all()
-            return [
-                {
-                    "run_id": r.run_id, "created_at": r.created_at.isoformat(),
-                    "status": r.status, "total_records": r.total_records,
-                }
-                for r in rows
-            ]
+            runs = session.query(RunModel).order_by(RunModel.created_at.desc()).all()
+            result = []
+            for run in runs:
+                clusters = session.query(ClusterModel).filter(
+                    ClusterModel.run_id == run.run_id
+                ).all()
+                violation_count = session.query(ViolationModel).filter(
+                    ViolationModel.run_id == run.run_id
+                ).count()
+                rec_ids = [
+                    r.id for r in session.query(RecommendationModel).filter(
+                        RecommendationModel.cluster_id.in_([c.id for c in clusters])
+                    ).all()
+                ]
+                decided_count = session.query(DecisionModel).filter(
+                    DecisionModel.recommendation_id.in_(rec_ids)
+                ).distinct(DecisionModel.recommendation_id).count() if rec_ids else 0
+                result.append({
+                    "run_id": run.run_id, "created_at": run.created_at.isoformat(),
+                    "status": run.status, "total_records": run.total_records,
+                    "violation_count": violation_count,
+                    "cluster_count": len(clusters),
+                    "policy_names": sorted({c.rule_name for c in clusters}),
+                    "decision_summary": (
+                        f"{decided_count}/{len(clusters)} decided" if clusters else "n/a"
+                    ),
+                })
+            return result
+
+    def count_pending_decisions(self) -> int:
+        with SessionLocal() as session:
+            all_recs = session.query(RecommendationModel).all()
+            decided_ids = {
+                d.recommendation_id for d in session.query(DecisionModel).all()
+            }
+            return sum(1 for r in all_recs if r.id not in decided_ids)
 
     def get_run(self, run_id: str) -> dict | None:
         with SessionLocal() as session:
