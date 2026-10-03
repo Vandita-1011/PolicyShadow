@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import "./theme.css";
-import { NavBar } from "./NavBar";
+import { Sidebar } from "./Sidebar";
 import { DashboardPage } from "./DashboardPage";
 import { HistoryPage } from "./HistoryPage";
 import { RunList } from "./RunList";
@@ -21,14 +21,16 @@ function LegacyRunsRoute() {
 export default function App() {
   return (
     <BrowserRouter>
-      <NavBar />
-      <div className="shell-content">
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/policies" element={<LegacyRunsRoute />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/runs/:runId" element={<RunDetailRoute />} />
-        </Routes>
+      <div className="app-shell">
+        <Sidebar />
+        <div className="main-content">
+          <Routes>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/policies" element={<LegacyRunsRoute />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/runs/:runId" element={<RunDetailRoute />} />
+          </Routes>
+        </div>
       </div>
     </BrowserRouter>
   );
