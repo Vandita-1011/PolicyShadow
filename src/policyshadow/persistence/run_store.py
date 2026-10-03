@@ -2,6 +2,8 @@
 
 import uuid
 
+from sqlalchemy import func
+
 from policyshadow.persistence.db import SessionLocal, engine
 from policyshadow.persistence.models import (
     Base,
@@ -96,30 +98,61 @@ class RunStore:
     def list_runs(self) -> list[dict]:
         with SessionLocal() as session:
             runs = session.query(RunModel).order_by(RunModel.created_at.desc()).all()
+            run_ids = [r.run_id for r in runs]
+            if not run_ids:
+                return []
+
+            violation_counts = dict(
+                session.query(ViolationModel.run_id, func.count(ViolationModel.violation_id))
+                .filter(ViolationModel.run_id.in_(run_ids))
+                .group_by(ViolationModel.run_id)
+                .all()
+            )
+
+            clusters = (
+                session.query(ClusterModel)
+                .filter(ClusterModel.run_id.in_(run_ids))
+                .all()
+            )
+            clusters_by_run: dict[str, list[ClusterModel]] = {}
+            for c in clusters:
+                clusters_by_run.setdefault(c.run_id, []).append(c)
+
+            cluster_ids = [c.id for c in clusters]
+            recs = (
+                session.query(RecommendationModel)
+                .filter(RecommendationModel.cluster_id.in_(cluster_ids))
+                .all()
+                if cluster_ids else []
+            )
+            rec_id_by_cluster = {r.cluster_id: r.id for r in recs}
+            all_rec_ids = [r.id for r in recs]
+
+            decided_rec_ids: set[str] = set()
+            if all_rec_ids:
+                rows = (
+                    session.query(DecisionModel.recommendation_id)
+                    .filter(DecisionModel.recommendation_id.in_(all_rec_ids))
+                    .distinct()
+                    .all()
+                )
+                decided_rec_ids = {rid for (rid,) in rows}
+
             result = []
             for run in runs:
-                clusters = session.query(ClusterModel).filter(
-                    ClusterModel.run_id == run.run_id
-                ).all()
-                violation_count = session.query(ViolationModel).filter(
-                    ViolationModel.run_id == run.run_id
-                ).count()
-                rec_ids = [
-                    r.id for r in session.query(RecommendationModel).filter(
-                        RecommendationModel.cluster_id.in_([c.id for c in clusters])
-                    ).all()
-                ]
-                decided_count = session.query(DecisionModel).filter(
-                    DecisionModel.recommendation_id.in_(rec_ids)
-                ).distinct(DecisionModel.recommendation_id).count() if rec_ids else 0
+                run_clusters = clusters_by_run.get(run.run_id, [])
+                decided_count = sum(
+                    1 for c in run_clusters
+                    if rec_id_by_cluster.get(c.id) in decided_rec_ids
+                )
                 result.append({
                     "run_id": run.run_id, "created_at": run.created_at.isoformat(),
                     "status": run.status, "total_records": run.total_records,
-                    "violation_count": violation_count,
-                    "cluster_count": len(clusters),
-                    "policy_names": sorted({c.rule_name for c in clusters}),
+                    "violation_count": violation_counts.get(run.run_id, 0),
+                    "cluster_count": len(run_clusters),
+                    "policy_names": sorted({c.rule_name for c in run_clusters}),
                     "decision_summary": (
-                        f"{decided_count}/{len(clusters)} decided" if clusters else "n/a"
+                        f"{decided_count}/{len(run_clusters)} decided" if run_clusters else "n/a"
                     ),
                 })
             return result

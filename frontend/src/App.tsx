@@ -1,24 +1,35 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from "react-router-dom";
 import "./theme.css";
+import { NavBar } from "./NavBar";
+import { DashboardPage } from "./DashboardPage";
+import { HistoryPage } from "./HistoryPage";
 import { RunList } from "./RunList";
 import { RunDetailView } from "./RunDetailView";
 
-export default function App() {
-  const [selectedRun, setSelectedRun] = useState<string | null>(null);
+function RunDetailRoute() {
+  const { runId } = useParams();
+  const navigate = useNavigate();
+  if (!runId) return <p>Run not found.</p>;
+  return <RunDetailView runId={runId} onBack={() => navigate("/history")} />;
+}
 
+function LegacyRunsRoute() {
+  const navigate = useNavigate();
+  return <RunList onSelect={(id) => navigate(`/runs/${id}`)} />;
+}
+
+export default function App() {
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto", padding: "2.5rem 1.5rem" }}>
-      <div className="app-header">
-        <h1>PolicyShadow</h1>
-        <p className="app-tagline">
-          Decision support for safe Kubernetes admission policy rollout
-        </p>
+    <BrowserRouter>
+      <NavBar />
+      <div className="shell-content">
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/policies" element={<LegacyRunsRoute />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/runs/:runId" element={<RunDetailRoute />} />
+        </Routes>
       </div>
-      {selectedRun ? (
-        <RunDetailView runId={selectedRun} onBack={() => setSelectedRun(null)} />
-      ) : (
-        <RunList onSelect={setSelectedRun} />
-      )}
-    </div>
+    </BrowserRouter>
   );
 }

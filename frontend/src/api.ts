@@ -52,7 +52,7 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json();
 }
 
-export const getRuns = (): Promise<RunSummary[]> =>
+export const getRuns = (): Promise<RunListItem[]> =>
   fetch(`${BASE_URL}/runs`).then(handle);
 
 export const getRunDetail = (runId: string): Promise<RunDetail> =>
@@ -71,3 +71,39 @@ export const submitDecision = (
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ decision, note: note || null }),
   }).then(handle);
+
+export interface Policy {
+  policy_id: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  rule_definition: string | null;
+  notes: string | null;
+  status: string;
+  is_system: boolean;
+  created_at: string;
+}
+
+export interface Stats {
+  total_runs: number;
+  total_policies: number;
+  total_violations_detected: number;
+  pending_decisions: number;
+}
+
+export interface RunListItem {
+  run_id: string;
+  created_at: string;
+  status: string;
+  total_records: number;
+  violation_count: number;
+  cluster_count: number;
+  policy_names: string[];
+  decision_summary: string;
+}
+
+export const getStats = (): Promise<Stats> =>
+  fetch(`${BASE_URL}/stats`).then(handle);
+
+export const getPolicies = (): Promise<Policy[]> =>
+  fetch(`${BASE_URL}/policies`).then(handle);
