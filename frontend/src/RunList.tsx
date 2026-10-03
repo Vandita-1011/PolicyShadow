@@ -54,7 +54,7 @@ export function RunList({ onSelect }: { onSelect: (runId: string) => void }) {
             explanations. This takes 1-3 minutes.
           </p>
         )}
-        {error && <p style={{ color: "var(--risk-high)" }}>{error}</p>}
+        {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
       </div>
 
       <div className="card">

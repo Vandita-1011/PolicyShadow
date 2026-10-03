@@ -37,7 +37,7 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {error && <p style={{ color: "var(--risk-high)" }}>{error}</p>}
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
 
       {stats && (
         <div className="stat-grid">

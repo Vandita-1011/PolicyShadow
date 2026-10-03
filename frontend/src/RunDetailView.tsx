@@ -6,9 +6,9 @@ import { Accordion } from "./Accordion";
 import { MarkdownContent } from "./MarkdownContent";
 
 function riskColor(level: string): string {
-  if (level === "Low") return "var(--risk-low)";
-  if (level === "High") return "var(--risk-high)";
-  return "var(--risk-medium)";
+  if (level === "Low") return "var(--success)";
+  if (level === "High") return "var(--danger)";
+  return "var(--warning)";
 }
 
 function ClusterCard({ cluster, onDecided }: { cluster: Cluster; onDecided: () => void }) {
@@ -84,7 +84,7 @@ export function RunDetailView({ runId, onBack }: { runId: string; onBack: () => 
   return (
     <div>
       <button className="btn-secondary" onClick={onBack} style={{ marginBottom: "1.25rem" }}>← Back to history</button>
-      {error && <p style={{ color: "var(--risk-high)" }}>{error}</p>}
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
       {!run && !error && <p className="pulse">Loading...</p>}
 
       {run && (
@@ -108,8 +108,8 @@ export function RunDetailView({ runId, onBack }: { runId: string; onBack: () => 
         <div className="card"><p className="pulse">Analysis running — this page will update automatically.</p></div>
       )}
       {run && run.status === "failed" && (
-        <div className="card" style={{ borderLeft: "4px solid var(--risk-high)" }}>
-          <p style={{ color: "var(--risk-high)" }}><strong>Run failed.</strong></p>
+        <div className="card" style={{ borderLeft: "4px solid var(--danger)" }}>
+          <p style={{ color: "var(--danger)" }}><strong>Run failed.</strong></p>
           <p style={{ color: "var(--color-text-muted)", fontSize: "0.85rem" }}>{run.error}</p>
         </div>
       )}

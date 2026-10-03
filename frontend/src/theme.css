@@ -205,3 +205,24 @@ button:disabled { background: var(--border-strong); color: var(--text-tertiary);
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
   .two-col { grid-template-columns: 1fr; }
 }
+
+/* ---- Layout width correction ---- */
+.main-content { max-width: 1760px; padding: 2rem 3rem 4rem; }
+.two-col { grid-template-columns: 7fr 3fr; }
+
+/* ---- History: real data-table layout, no unwanted wrapping ---- */
+.history-table { width: 100%; border-collapse: collapse; }
+.history-row-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 2.2fr) 110px 1fr 90px 130px 130px 110px;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-scroll { overflow-x: auto; }
+

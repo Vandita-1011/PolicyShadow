@@ -32,30 +32,47 @@ export function HistoryPage() {
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {error && <p style={{ color: "var(--risk-high)" }}>{error}</p>}
+      {error && <p style={{ color: "var(--danger)" }}>{error}</p>}
 
       <div className="card" style={{ padding: 0 }}>
-        {filtered.length === 0 ? (
-          <div className="empty-state-compact"><p>No matching runs.</p></div>
-        ) : (
-          filtered.map((r) => (
-            <div key={r.run_id} className="run-row" style={{ padding: "1rem 1.25rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr", gap: "1rem", flex: 1, alignItems: "center" }}>
-                <div>
+        <div className="history-scroll">
+          <div
+            className="history-row-grid"
+            style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid var(--border-color)" }}
+          >
+            <span className="label">Policies</span>
+            <span className="label">Status</span>
+            <span className="label">Violations / Clusters</span>
+            <span className="label">Records</span>
+            <span className="label">Decision</span>
+            <span className="label">Date</span>
+            <span />
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="empty-state-compact"><p>No matching runs.</p></div>
+          ) : (
+            filtered.map((r) => (
+              <div
+                key={r.run_id}
+                className="history-row-grid"
+                style={{ padding: "1rem 1.25rem", borderBottom: "1px solid var(--border-color)" }}
+              >
+                <span className="truncate" title={r.policy_names.join(" + ")}>
                   <strong>{r.policy_names.join(" + ")}</strong>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "0.8rem" }}>
-                    {new Date(r.created_at).toLocaleString()}
-                  </div>
-                </div>
+                </span>
                 <span className={`status-pill status-${r.status}`}>{r.status}</span>
-                <span>{r.violation_count} violations / {r.cluster_count} clusters</span>
-                <span>{r.total_records} records</span>
-                <span>{r.decision_summary}</span>
+                <span>{r.violation_count} / {r.cluster_count}</span>
+                <span>{r.total_records}</span>
+                <span className="truncate">{r.decision_summary}</span>
+                <span className="truncate" style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
+                  {new Date(r.created_at).toLocaleDateString()}
+                </span>
+                <Link to={`/runs/${r.run_id}`}><button className="btn-secondary">View</button></Link>
               </div>
-              <Link to={`/runs/${r.run_id}`}><button className="btn-secondary">View Details</button></Link>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
