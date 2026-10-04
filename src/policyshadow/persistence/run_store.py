@@ -165,6 +165,14 @@ class RunStore:
             }
             return sum(1 for r in all_recs if r.id not in decided_ids)
 
+    def count_runs(self) -> int:
+        with SessionLocal() as session:
+            return session.query(RunModel).count()
+
+    def count_total_violations(self) -> int:
+        with SessionLocal() as session:
+            return session.query(ViolationModel).count()
+
     def get_run(self, run_id: str) -> dict | None:
         with SessionLocal() as session:
             run = session.get(RunModel, run_id)

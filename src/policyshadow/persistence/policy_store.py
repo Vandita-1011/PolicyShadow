@@ -42,6 +42,10 @@ class PolicyStore:
             rows = session.query(PolicyModel).order_by(PolicyModel.created_at).all()
             return [self._to_dict(r) for r in rows]
 
+    def count_policies(self) -> int:
+        with SessionLocal() as session:
+            return session.query(PolicyModel).count()
+
     def get_policy(self, policy_id: str) -> dict | None:
         with SessionLocal() as session:
             row = session.get(PolicyModel, policy_id)

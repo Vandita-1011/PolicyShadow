@@ -98,11 +98,9 @@ def create_policy(body: PolicyCreateRequest):
 
 @app.get("/stats")
 def stats():
-    runs = _store().list_runs()
-    total_violations = sum(r["violation_count"] for r in runs)
     return {
-        "total_runs": len(runs),
-        "total_policies": len(_policy_store().list_policies()),
-        "total_violations_detected": total_violations,
+        "total_runs": _store().count_runs(),
+        "total_policies": _policy_store().count_policies(),
+        "total_violations_detected": _store().count_total_violations(),
         "pending_decisions": _store().count_pending_decisions(),
     }
