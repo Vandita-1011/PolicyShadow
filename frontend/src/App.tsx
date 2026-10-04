@@ -5,6 +5,7 @@ import { DashboardPage } from "./DashboardPage";
 import { HistoryPage } from "./HistoryPage";
 import { RunList } from "./RunList";
 import { RunDetailView } from "./RunDetailView";
+import { SubmitPolicyPage } from "./SubmitPolicyPage";
 
 function RunDetailRoute() {
   const { runId } = useParams();
@@ -27,6 +28,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/policies" element={<LegacyRunsRoute />} />
+            <Route path="/submit-policy" element={<SubmitPolicyPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/runs/:runId" element={<RunDetailRoute />} />
           </Routes>

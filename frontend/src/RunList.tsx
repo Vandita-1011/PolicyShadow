@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getRuns, startAnalysis, type RunSummary } from "./api";
 
 function statusPillClass(status: string): string {
@@ -47,7 +48,10 @@ export function RunList({ onSelect }: { onSelect: (runId: string) => void }) {
         </p>
         <button onClick={handleRunAnalysis} disabled={starting}>
           {starting ? "Running analysis..." : "Run Analysis"}
-        </button>
+        </button>{" "}
+        <Link to="/submit-policy">
+          <button className="btn-secondary">Submit Custom Policy</button>
+        </Link>
         {starting && (
           <p className="pulse" style={{ color: "var(--color-text-muted)", marginTop: "0.75rem" }}>
             Replaying history, clustering violations, and generating

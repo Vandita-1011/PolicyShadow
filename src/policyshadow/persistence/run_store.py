@@ -44,6 +44,11 @@ class RunStore:
             )
             session.commit()
 
+    def delete_run(self, run_id: str) -> None:
+        with SessionLocal() as session:
+            session.query(RunModel).filter(RunModel.run_id == run_id).delete()
+            session.commit()
+
     def save_cluster_result(
         self, run_id: str, cluster: dict, explanation: str, recommendation: dict
     ) -> tuple[str, str]:
@@ -172,6 +177,14 @@ class RunStore:
     def count_total_violations(self) -> int:
         with SessionLocal() as session:
             return session.query(ViolationModel).count()
+
+    def _set_policy_ids(self, run_id: str, policy_ids: list[str]) -> None:
+        import json
+        with SessionLocal() as session:
+            session.query(RunModel).filter(RunModel.run_id == run_id).update(
+                {"policy_ids": json.dumps(policy_ids)}
+            )
+            session.commit()
 
     def get_run(self, run_id: str) -> dict | None:
         with SessionLocal() as session:

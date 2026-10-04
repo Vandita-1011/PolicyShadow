@@ -52,14 +52,32 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json();
 }
 
+export interface ValidationResult { valid: boolean; error: string | null; }
+
+export const validatePolicy = (policy_yaml: string): Promise<ValidationResult> =>
+  fetch(`${BASE_URL}/policies/validate`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ policy_yaml }),
+  }).then(handle);
+
+export const submitPolicy = (name: string, description: string, policy_yaml: string): Promise<Policy> =>
+  fetch(`${BASE_URL}/policies/submit`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, description, policy_yaml }),
+  }).then(handle);
+
 export const getRuns = (): Promise<RunListItem[]> =>
   fetch(`${BASE_URL}/runs`).then(handle);
 
 export const getRunDetail = (runId: string): Promise<RunDetail> =>
   fetch(`${BASE_URL}/runs/${runId}`).then(handle);
 
-export const startAnalysis = (): Promise<{ run_id: string }[]> =>
-  fetch(`${BASE_URL}/analyze`, { method: "POST" }).then(handle);
+export const startAnalysis = (policy_id?: string): Promise<{ run_id: string }[]> =>
+  fetch(`${BASE_URL}/analyze`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(policy_id ? { policy_id } : {}),
+  }).then(handle);
 
 export const submitDecision = (
   recommendationId: string,

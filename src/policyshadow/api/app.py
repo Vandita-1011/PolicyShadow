@@ -31,6 +31,20 @@ class PolicyCreateRequest(BaseModel):
     status: str = "active"
 
 
+class PolicyValidateRequest(BaseModel):
+    policy_yaml: str
+
+
+class PolicySubmitRequest(BaseModel):
+    name: str
+    description: str | None = None
+    policy_yaml: str
+
+
+class AnalyzeRequest(BaseModel):
+    policy_id: str | None = None
+
+
 class DecisionRequest(BaseModel):
     decision: Literal["approve", "reject"]
     note: str | None = None
@@ -52,8 +66,9 @@ def root():
 
 
 @app.post("/analyze")
-def analyze():
-    return run_full_pipeline()
+def analyze(body: AnalyzeRequest | None = None):
+    policy_id = body.policy_id if body else None
+    return run_full_pipeline(policy_id=policy_id)
 
 
 @app.get("/runs")
@@ -94,6 +109,22 @@ def create_policy(body: PolicyCreateRequest):
         body.name, body.description, body.category,
         body.rule_definition, body.notes, body.status,
     )
+
+
+@app.post("/policies/validate")
+def validate_policy(body: PolicyValidateRequest):
+    from policyshadow.policy_engines.policy_validator import validate_policy_yaml
+    valid, error = validate_policy_yaml(body.policy_yaml)
+    return {"valid": valid, "error": error}
+
+
+@app.post("/policies/submit")
+def submit_policy(body: PolicySubmitRequest):
+    from policyshadow.policy_engines.policy_validator import validate_policy_yaml
+    valid, error = validate_policy_yaml(body.policy_yaml)
+    if not valid:
+        raise HTTPException(status_code=422, detail=error)
+    return _policy_store().create_user_policy(body.name, body.description, body.policy_yaml)
 
 
 @app.get("/stats")

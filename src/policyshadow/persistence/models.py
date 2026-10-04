@@ -20,6 +20,7 @@ class RunModel(Base):
     status = Column(String, nullable=False)
     total_records = Column(Integer, nullable=False)
     error = Column(Text, nullable=True)
+    policy_ids = Column(Text, nullable=True)
 
 
 class ClusterModel(Base):
@@ -84,3 +85,5 @@ class PolicyModel(Base):
     status = Column(String, nullable=False, default="active")
     is_system = Column(String, nullable=False, default="false")
     created_at = Column(DateTime(timezone=True), nullable=False, default=utcnow)
+    policy_yaml = Column(Text, nullable=True)
+    policy_file_path = Column(Text, nullable=True)

@@ -1,9 +1,12 @@
 """Persistence for policies (both system and user-created)."""
 
 import uuid
+from pathlib import Path
 
 from policyshadow.persistence.db import SessionLocal, engine
 from policyshadow.persistence.models import Base, PolicyModel
+
+USER_POLICIES_DIR = Path(__file__).parent.parent / "data" / "user_policies"
 
 SYSTEM_POLICIES = [
     {
@@ -66,6 +69,38 @@ class PolicyStore:
             session.commit()
             return self._to_dict(row)
 
+    def create_user_policy(
+        self, name: str, description: str | None, policy_yaml: str,
+    ) -> dict:
+        USER_POLICIES_DIR.mkdir(parents=True, exist_ok=True)
+        policy_id = str(uuid.uuid4())
+        file_path = USER_POLICIES_DIR / f"{policy_id}.yaml"
+        file_path.write_text(policy_yaml, encoding="utf-8")
+
+        with SessionLocal() as session:
+            row = PolicyModel(
+                policy_id=policy_id, name=name, description=description,
+                category="User-submitted", rule_definition=None, notes=None,
+                status="active", is_system="false",
+                policy_yaml=policy_yaml, policy_file_path=str(file_path),
+            )
+            session.add(row)
+            session.commit()
+            return self._to_dict(row)
+
+    def resolve_policy_path(self, policy_id: str) -> str | None:
+        """Returns the file path to use for Kyverno evaluation for a given policy_id."""
+        policy = self.get_policy(policy_id)
+        if policy is None:
+            return None
+        if policy["is_system"]:
+            system_paths = {
+                "p1": str(Path(__file__).parent.parent / "data" / "sample_policies" / "restrict-privileged-containers.yaml"),
+                "p2": str(Path(__file__).parent.parent / "data" / "sample_policies" / "require-non-root.yaml"),
+            }
+            return system_paths.get(policy_id)
+        return policy["policy_file_path"]
+
     @staticmethod
     def _to_dict(r: PolicyModel) -> dict:
         return {
@@ -73,4 +108,5 @@ class PolicyStore:
             "category": r.category, "rule_definition": r.rule_definition,
             "notes": r.notes, "status": r.status,
             "is_system": r.is_system == "true", "created_at": r.created_at.isoformat(),
+            "policy_yaml": r.policy_yaml, "policy_file_path": r.policy_file_path,
         }
