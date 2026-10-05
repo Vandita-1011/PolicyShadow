@@ -1,5 +1,7 @@
 """FastAPI application exposing the PolicyShadow pipeline."""
 
+import time
+import threading
 from functools import lru_cache
 from typing import Literal
 
@@ -16,11 +18,52 @@ app = FastAPI(title="PolicyShadow")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ---------------------------------------------------------------------------
+# Lightweight in-memory TTL cache
+# Keeps the last computed value of slow read endpoints for up to TTL seconds.
+# Any write operation (analyze / decide / submit) calls _invalidate_cache()
+# so the next read always fetches fresh data from the database.
+# ---------------------------------------------------------------------------
+_CACHE_TTL = 30  # seconds — tune freely; 30 s is safe for this workload
+_cache_lock = threading.Lock()
+_cache: dict[str, tuple[float, object]] = {}  # key -> (timestamp, value)
+
+
+def _cache_get(key: str):
+    """Return cached value if still within TTL, else None."""
+    with _cache_lock:
+        entry = _cache.get(key)
+        if entry and (time.monotonic() - entry[0]) < _CACHE_TTL:
+            return entry[1]
+    return None
+
+
+def _cache_set(key: str, value):
+    """Store a value in the cache with the current timestamp."""
+    with _cache_lock:
+        _cache[key] = (time.monotonic(), value)
+    return value
+
+
+def _invalidate_cache(*keys: str):
+    """Remove specific keys from the cache (or all keys if none given)."""
+    with _cache_lock:
+        if keys:
+            for k in keys:
+                _cache.pop(k, None)
+        else:
+            _cache.clear()
+
+
+# ---------------------------------------------------------------------------
+# Singleton store accessors (unchanged)
+# ---------------------------------------------------------------------------
 
 class PolicyCreateRequest(BaseModel):
     name: str
@@ -60,6 +103,10 @@ def _store() -> RunStore:
     return RunStore()
 
 
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
+
 @app.get("/")
 def root():
     return {"status": "ok"}
@@ -68,12 +115,18 @@ def root():
 @app.post("/analyze")
 def analyze(body: AnalyzeRequest | None = None):
     policy_id = body.policy_id if body else None
-    return run_full_pipeline(policy_id=policy_id)
+    result = run_full_pipeline(policy_id=policy_id)
+    # A new run was created — invalidate run list and stats caches
+    _invalidate_cache("runs", "stats")
+    return result
 
 
 @app.get("/runs")
 def runs():
-    return _store().list_runs()
+    cached = _cache_get("runs")
+    if cached is not None:
+        return cached
+    return _cache_set("runs", _store().list_runs())
 
 
 @app.get("/runs/{run_id}")
@@ -89,6 +142,8 @@ def decide(recommendation_id: str, body: DecisionRequest):
     result = _store().record_decision(recommendation_id, body.decision, body.note)
     if result is None:
         raise HTTPException(status_code=404, detail="recommendation not found")
+    # Decision changed pending count and run summaries — bust both caches
+    _invalidate_cache("stats", "runs")
     return result
 
 
@@ -100,15 +155,20 @@ def violations():
 
 @app.get("/policies")
 def list_policies():
-    return _policy_store().list_policies()
+    cached = _cache_get("policies")
+    if cached is not None:
+        return cached
+    return _cache_set("policies", _policy_store().list_policies())
 
 
 @app.post("/policies")
 def create_policy(body: PolicyCreateRequest):
-    return _policy_store().create_policy(
+    result = _policy_store().create_policy(
         body.name, body.description, body.category,
         body.rule_definition, body.notes, body.status,
     )
+    _invalidate_cache("policies", "stats")
+    return result
 
 
 @app.post("/policies/validate")
@@ -124,14 +184,20 @@ def submit_policy(body: PolicySubmitRequest):
     valid, error = validate_policy_yaml(body.policy_yaml)
     if not valid:
         raise HTTPException(status_code=422, detail=error)
-    return _policy_store().create_user_policy(body.name, body.description, body.policy_yaml)
+    result = _policy_store().create_user_policy(body.name, body.description, body.policy_yaml)
+    _invalidate_cache("policies", "stats")
+    return result
 
 
 @app.get("/stats")
 def stats():
-    return {
+    cached = _cache_get("stats")
+    if cached is not None:
+        return cached
+    value = {
         "total_runs": _store().count_runs(),
         "total_policies": _policy_store().count_policies(),
         "total_violations_detected": _store().count_total_violations(),
         "pending_decisions": _store().count_pending_decisions(),
     }
+    return _cache_set("stats", value)
