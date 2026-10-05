@@ -18,7 +18,7 @@
 - ⚡ **Real-Time Candidate Policy Submission & Validation**: Paste or upload custom Kyverno `ClusterPolicy` YAML files with instant syntax parsing and dry-run validation powered directly by the official Kyverno CLI.
 - 🔄 **Multi-Policy Historical Replay Engine**: Replays 30+ historical Kubernetes workload manifests against custom or baseline security policies in non-enforcement (shadow) mode to measure real operational impact.
 - 🧠 **Vector Embedding & HDBSCAN Clustering**: Transforms structured violation metrics and resource attributes into vector embeddings, grouping similar non-compliant workloads using HDBSCAN density clustering.
-- 📚 **RAG-Augmented Explanation & Evidence Engine**: Enriches violation clusters with contextual security documentation and organizational knowledge bases, querying Google Gemini LLM for precise, evidence-backed violation explanations.
+- 📚 **RAG-Augmented Explanation & Evidence Engine**: Enriches violation clusters with contextual security documentation and organizational knowledge bases, querying Groq API LLM for precise, evidence-backed violation explanations.
 - 🎯 **Risk-Scored Rollout Recommendation Matrix**: Calculates blast radius and operational risk scores to recommend safe deployment paths (`Audit` mode vs. `Enforce` mode vs. `Exceptions required`).
 - 💾 **PostgreSQL / SQLite Persistence**: Full audit history for analysis runs, violation snapshots, recommendation records, and operator decisions (`Approve` / `Reject` with audit notes).
 - 🖥️ **Modern Reactive Dashboard UI**: Built with React 19, TypeScript, and Vite featuring real-time status indicators, violation drill-downs, interactive policy creation, and decision workflows.
@@ -34,7 +34,7 @@ flowchart TD
     B -->|Violation Stream| D[Postgres Violation Repository]
     D -->|Vector Embeddings| E[HDBSCAN Density Clustering]
     E -->|Violation Clusters| F[RAG Evidence Retriever]
-    F -->|Knowledge Corpus| G[Google Gemini LLM Explainer]
+    F -->|Knowledge Corpus| G[Groq API LLM Explainer]
     G -->|Contextual Explanations| H[Rollout Recommendation Engine]
     H -->|Risk Scoring| I[RunStore DB & Audit Log]
     I -->|REST API| J[React 19 / Vite Frontend UI]
@@ -78,7 +78,7 @@ CapstoneProjectDemo/
 │   │   └── user_policies/           # Dynamically submitted candidate policy YAMLs
 │   ├── embeddings/                  # SentenceTransformers embedding generation
 │   │   └── embedder.py
-│   ├── explanation/                 # LLM explainer powered by Gemini API
+│   ├── explanation/                 # LLM explainer powered by Groq API
 │   │   └── explainer.py
 │   ├── persistence/                 # SQLAlchemy ORM, Neon Postgres / SQLite DB store
 │   │   ├── models.py                # Database tables (runs, clusters, violations, policies)
@@ -119,7 +119,7 @@ CapstoneProjectDemo/
 | **Database & ORM** | PostgreSQL / Neon DB, SQLite, SQLAlchemy 2.0 |
 | **Policy Engine** | Kyverno CLI v1.10+ (`ClusterPolicy` evaluation) |
 | **Machine Learning** | HDBSCAN, Scikit-learn, SentenceTransformers (`all-MiniLM-L6-v2`) |
-| **AI & RAG** | Google Gemini 1.5 / 2.0 Flash API, RAG Semantic Evidence Retriever |
+| **AI & RAG** | Groq API (Llama 3 / Mixtral), RAG Semantic Evidence Retriever |
 | **Frontend Framework** | React 19, TypeScript, Vite 6, React Router DOM v7 |
 | **Styling & UI** | Modern Vanilla CSS / Design Tokens, Lucide Icons, Glassmorphism UI |
 
@@ -149,10 +149,10 @@ source venv/bin/activate
 # Install dependencies
 pip install -e .
 
-# Configure environment variables (optional for local SQLite, required for Gemini API)
-export GEMINI_API_KEY="your-gemini-api-key"
+# Configure environment variables (optional for local SQLite, required for Groq API)
+export GROQ_API_KEY="your-groq-api-key"
 # On Windows PowerShell:
-# $env:GEMINI_API_KEY="your-gemini-api-key"
+# $env:GROQ_API_KEY="your-groq-api-key"
 
 # Start the FastAPI Backend Server
 python -m uvicorn policyshadow.api.app:app --port 8000 --reload
