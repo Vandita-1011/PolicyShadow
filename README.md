@@ -119,7 +119,7 @@ CapstoneProjectDemo/
 | **Database & ORM** | PostgreSQL / Neon DB, SQLite, SQLAlchemy 2.0 |
 | **Policy Engine** | Kyverno CLI v1.10+ (`ClusterPolicy` evaluation) |
 | **Machine Learning** | HDBSCAN, Scikit-learn, SentenceTransformers (`all-MiniLM-L6-v2`) |
-| **AI & RAG** | Groq API (Llama 3 / Mixtral), RAG Semantic Evidence Retriever |
+| **AI & RAG** | Groq API, RAG Semantic Evidence Retriever |
 | **Frontend Framework** | React 19, TypeScript, Vite 6, React Router DOM v7 |
 | **Styling & UI** | Modern Vanilla CSS / Design Tokens, Lucide Icons, Glassmorphism UI |
 
@@ -150,9 +150,9 @@ source venv/bin/activate
 pip install -e .
 
 # Configure environment variables (optional for local SQLite, required for Groq API)
-export GROQ_API_KEY="your-groq-api-key"
+export Groq_API_KEY="your-groq-api-key"
 # On Windows PowerShell:
-# $env:GROQ_API_KEY="your-groq-api-key"
+# $env:Groq_API_KEY="your-groq-api-key"
 
 # Start the FastAPI Backend Server
 python -m uvicorn policyshadow.api.app:app --port 8000 --reload
@@ -216,5 +216,5 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 ---
 
 <p center>
-  Developed with ❤️ for safe Kubernetes policy operations.
+  Developed for safe Kubernetes policy operations.
 </p>
