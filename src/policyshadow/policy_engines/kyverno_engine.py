@@ -38,7 +38,7 @@ class KyvernoPolicyEngine(PolicyEngine):
             violations.append(Violation(
                 record_id=record.record_id,
                 policy_id=policy.policy_id,
-                rule_name=entry.get("rule", ""),
+                rule_name=policy.name or entry.get("rule", ""),
                 resource_kind=record.resource_kind,
                 resource_name=record.resource_name,
                 namespace=record.namespace,

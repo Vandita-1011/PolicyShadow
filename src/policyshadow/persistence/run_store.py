@@ -1,5 +1,6 @@
 """Persistence for runs, clusters, recommendations and engineer decisions."""
 
+import json
 import uuid
 
 from sqlalchemy import func
@@ -9,6 +10,7 @@ from policyshadow.persistence.models import (
     Base,
     ClusterModel,
     DecisionModel,
+    PolicyModel,
     RecommendationModel,
     RunModel,
     ViolationModel,
@@ -107,6 +109,10 @@ class RunStore:
             if not run_ids:
                 return []
 
+            policy_map = {
+                p.policy_id: p.name for p in session.query(PolicyModel.policy_id, PolicyModel.name).all()
+            }
+
             violation_counts = dict(
                 session.query(ViolationModel.run_id, func.count(ViolationModel.violation_id))
                 .filter(ViolationModel.run_id.in_(run_ids))
@@ -150,12 +156,22 @@ class RunStore:
                     1 for c in run_clusters
                     if rec_id_by_cluster.get(c.id) in decided_rec_ids
                 )
+                p_names = []
+                if run.policy_ids:
+                    try:
+                        p_ids = json.loads(run.policy_ids)
+                        p_names = [policy_map[pid] for pid in p_ids if pid in policy_map]
+                    except Exception:
+                        pass
+                if not p_names:
+                    p_names = sorted({c.rule_name for c in run_clusters})
+
                 result.append({
                     "run_id": run.run_id, "created_at": run.created_at.isoformat(),
                     "status": run.status, "total_records": run.total_records,
                     "violation_count": violation_counts.get(run.run_id, 0),
                     "cluster_count": len(run_clusters),
-                    "policy_names": sorted({c.rule_name for c in run_clusters}),
+                    "policy_names": p_names,
                     "decision_summary": (
                         f"{decided_count}/{len(run_clusters)} decided" if run_clusters else "n/a"
                     ),
@@ -179,7 +195,6 @@ class RunStore:
             return session.query(ViolationModel).count()
 
     def _set_policy_ids(self, run_id: str, policy_ids: list[str]) -> None:
-        import json
         with SessionLocal() as session:
             session.query(RunModel).filter(RunModel.run_id == run_id).update(
                 {"policy_ids": json.dumps(policy_ids)}
@@ -191,6 +206,20 @@ class RunStore:
             run = session.get(RunModel, run_id)
             if run is None:
                 return None
+            
+            policy_map = {
+                p.policy_id: p.name for p in session.query(PolicyModel.policy_id, PolicyModel.name).all()
+            }
+            single_policy_name = None
+            if run.policy_ids:
+                try:
+                    p_ids = json.loads(run.policy_ids)
+                    names = [policy_map[pid] for pid in p_ids if pid in policy_map]
+                    if len(names) == 1:
+                        single_policy_name = names[0]
+                except Exception:
+                    pass
+
             clusters = (
                 session.query(ClusterModel)
                 .filter(ClusterModel.run_id == run_id)
@@ -226,7 +255,7 @@ class RunStore:
                 cluster_dicts.append({
                     "cluster_id": c.id,
                     "label": c.label,
-                    "rule_name": c.rule_name,
+                    "rule_name": single_policy_name or c.rule_name,
                     "violation_count": c.violation_count,
                     "violation_ids": sorted(ids_by_cluster.get(c.id, [])),
                     "evidence": c.evidence,
