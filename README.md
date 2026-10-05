@@ -149,10 +149,10 @@ source venv/bin/activate
 # Install dependencies
 pip install -e .
 
-# Configure environment variables (optional for local SQLite, required for Gemini API)
-export GEMINI_API_KEY="your-gemini-api-key"
+# Configure environment variables (optional for local SQLite, required for Groq API)
+export Groq_API_KEY="your-groq-api-key"
 # On Windows PowerShell:
-# $env:GEMINI_API_KEY="your-gemini-api-key"
+# $env:Groq_API_KEY="your-groq-api-key"
 
 # Start the FastAPI Backend Server
 python -m uvicorn policyshadow.api.app:app --port 8000 --reload
@@ -216,5 +216,5 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 ---
 
 <p center>
-  Developed with ❤️ for safe Kubernetes policy operations.
+  Developed for safe Kubernetes policy operations.
 </p>
