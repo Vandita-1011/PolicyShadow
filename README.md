@@ -119,7 +119,7 @@ CapstoneProjectDemo/
 | **Database & ORM** | PostgreSQL / Neon DB, SQLite, SQLAlchemy 2.0 |
 | **Policy Engine** | Kyverno CLI v1.10+ (`ClusterPolicy` evaluation) |
 | **Machine Learning** | HDBSCAN, Scikit-learn, SentenceTransformers (`all-MiniLM-L6-v2`) |
-| **AI & RAG** | Google Gemini 1.5 / 2.0 Flash API, RAG Semantic Evidence Retriever |
+| **AI & RAG** | Groq API, RAG Semantic Evidence Retriever |
 | **Frontend Framework** | React 19, TypeScript, Vite 6, React Router DOM v7 |
 | **Styling & UI** | Modern Vanilla CSS / Design Tokens, Lucide Icons, Glassmorphism UI |
 
