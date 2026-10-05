@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: policyshadow-unique-test
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: policyshadow-unique-label
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "PolicyShadow unique test: workload must contain the team=policyshadow label."
+        pattern:
+          metadata:
+            labels:
+              team: policyshadow
