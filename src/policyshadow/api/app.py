@@ -18,8 +18,7 @@ app = FastAPI(title="PolicyShadow")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -30,7 +29,9 @@ app.add_middleware(
 # Any write operation (analyze / decide / submit) calls _invalidate_cache()
 # so the next read always fetches fresh data from the database.
 # ---------------------------------------------------------------------------
-_CACHE_TTL = 30  # seconds — tune freely; 30 s is safe for this workload
+_CACHE_TTL = 5  # seconds — kept short because multiple machines may
+# share the same remote database; a long TTL risks one machine
+# showing stale data after another machine writes.
 _cache_lock = threading.Lock()
 _cache: dict[str, tuple[float, object]] = {}  # key -> (timestamp, value)
 

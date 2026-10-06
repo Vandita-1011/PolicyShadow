@@ -30,4 +30,4 @@ def test_violating_record_produces_violation():
     engine = KyvernoPolicyEngine()
     violations = engine.evaluate(_record("r02"), _policy())
     assert len(violations) == 1
-    assert violations[0].rule_name == "privileged-containers"
+    assert violations[0].rule_name == "restrict-privileged-containers"

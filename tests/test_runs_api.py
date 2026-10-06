@@ -23,7 +23,7 @@ def test_run_is_persisted_and_traceable():
         assert detail["violation_count"] == 31
         assert len(detail["clusters"]) == 2
         counts = {c["rule_name"]: c["violation_count"] for c in detail["clusters"]}
-        assert counts == {"privileged-containers": 15, "run-as-non-root": 16}
+        assert counts == {"restrict-privileged-containers": 15, "require-non-root": 16}
         for c in detail["clusters"]:
             assert len(c["violation_ids"]) == c["violation_count"]
             assert len(c["evidence"]) == 3

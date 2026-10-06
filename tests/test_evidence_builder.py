@@ -18,4 +18,4 @@ def test_evidence_packaged_per_cluster(tmp_path):
     assert total_violations == len(violations)
     for p in packaged:
         assert len(p["evidence"]) == 3
-        assert p["rule_name"] in ("privileged-containers", "run-as-non-root")
+        assert p["rule_name"] in ("restrict-privileged-containers", "require-non-root")

@@ -26,6 +26,6 @@ def test_subprocess_analysis_matches_known_clusters(tmp_path):
 
     assert len(packaged) == 2
     counts = {c["rule_name"]: c["violation_count"] for c in packaged}
-    assert counts == {"privileged-containers": 15, "run-as-non-root": 16}
+    assert counts == {"restrict-privileged-containers": 15, "require-non-root": 16}
     for c in packaged:
         assert len(c["evidence"]) == 3

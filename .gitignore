@@ -6,3 +6,5 @@ milestone1_output.json
 temp_check.json
 .pytest_cache/
 *.egg-info/
+src/policyshadow/data/user_policies/*.yaml
+

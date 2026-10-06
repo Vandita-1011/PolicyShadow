@@ -38,6 +38,7 @@ class KyvernoPolicyEngine(PolicyEngine):
             violations.append(Violation(
                 record_id=record.record_id,
                 policy_id=policy.policy_id,
+                # Use the policy's own name rather than Kyverno's internal rule name, so user-submitted custom policies are identifiable in run history.
                 rule_name=policy.name or entry.get("rule", ""),
                 resource_kind=record.resource_kind,
                 resource_name=record.resource_name,

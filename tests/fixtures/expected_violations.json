@@ -1,5 +1,5 @@
 {
   "expected_violating_record_ids": ["r02", "r04", "r06", "r08", "r10", "r12", "r14", "r16"],
-  "expected_rule_name": "privileged-containers",
+  "expected_rule_name": "restrict-privileged-containers",
   "expected_message_substring": "Privileged mode is disallowed"
 }

@@ -25,7 +25,7 @@ def test_analyze_returns_two_clusters_with_valid_data():
 
     assert len(data) == 2
     rule_names = {c["rule_name"] for c in data}
-    assert rule_names == {"privileged-containers", "run-as-non-root"}
+    assert rule_names == {"restrict-privileged-containers", "require-non-root"}
 
     total = sum(c["violation_count"] for c in data)
     assert total == 31
