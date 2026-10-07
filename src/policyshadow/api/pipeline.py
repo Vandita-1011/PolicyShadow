@@ -40,6 +40,14 @@ def run_full_pipeline(policy_id: str | None = None) -> list[dict]:
         for policy in policies_to_run:
             all_violations.extend(engine.replay(ALL_RECORDS, policy))
 
+        # If no violations were detected, complete the run immediately — no
+        # clustering, embedding or LLM calls are needed or meaningful.
+        if not all_violations:
+            policy_ids_used = [policy_id] if policy_id else [p.policy_id for p in CANDIDATE_POLICIES]
+            store._set_policy_ids(run_id, policy_ids_used)
+            store.complete_run(run_id)
+            return []
+
         results = []
         for cluster in run_analysis(all_violations):
             explanation = explain_cluster(cluster)

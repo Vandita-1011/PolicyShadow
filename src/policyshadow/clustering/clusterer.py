@@ -10,6 +10,12 @@ DISTANCE_THRESHOLD = 0.1
 def cluster_violations(
     violations: list[Violation], embeddings: dict[str, list[float]]
 ) -> dict[str, list[str]]:
+    # AgglomerativeClustering requires ≥2 samples — handle edge cases explicitly.
+    if len(violations) == 0:
+        return {}
+    if len(violations) == 1:
+        return {"cluster-0": [violations[0].violation_id]}
+
     ids = [v.violation_id for v in violations]
     vectors = [embeddings[vid] for vid in ids]
 

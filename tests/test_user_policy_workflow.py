@@ -52,8 +52,17 @@ def test_submitted_policy_produces_different_result_than_demo_policies():
 
 def test_invalid_policy_id_raises_instead_of_silently_using_demo_policies():
     import pytest
+    from policyshadow.persistence.db import SessionLocal
+    from policyshadow.persistence.models import RunModel
     with pytest.raises(ValueError):
         run_full_pipeline(policy_id="this-policy-does-not-exist")
+    with SessionLocal() as s:
+        s.query(RunModel).filter(
+            RunModel.status == "failed",
+            RunModel.error.like("%this-policy-does-not-exist%")
+        ).delete()
+        s.commit()
+
 
 
 def test_no_policy_id_preserves_existing_default_behavior():
