@@ -49,7 +49,7 @@ export interface RunDetail {
 
 async function handle<T>(res: Response): Promise<T> {
   if (!res.ok) throw new Error(`Request failed: ${res.status} ${res.statusText}`);
-  return res.json();
+  return res.json() as Promise<T>;
 }
 
 export interface ValidationResult { valid: boolean; error: string | null; }
@@ -58,26 +58,26 @@ export const validatePolicy = (policy_yaml: string): Promise<ValidationResult> =
   fetch(`${BASE_URL}/policies/validate`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ policy_yaml }),
-  }).then(handle);
+  }).then((res) => handle<ValidationResult>(res));
 
 export const submitPolicy = (name: string, description: string, policy_yaml: string): Promise<Policy> =>
   fetch(`${BASE_URL}/policies/submit`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, description, policy_yaml }),
-  }).then(handle);
+  }).then((res) => handle<Policy>(res));
 
 export const getRuns = (): Promise<RunListItem[]> =>
-  fetch(`${BASE_URL}/runs`).then(handle);
+  fetch(`${BASE_URL}/runs`).then((res) => handle<RunListItem[]>(res));
 
 export const getRunDetail = (runId: string): Promise<RunDetail> =>
-  fetch(`${BASE_URL}/runs/${runId}`).then(handle);
+  fetch(`${BASE_URL}/runs/${runId}`).then((res) => handle<RunDetail>(res));
 
 export const startAnalysis = (policy_id?: string): Promise<{ run_id: string }[]> =>
   fetch(`${BASE_URL}/analyze`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(policy_id ? { policy_id } : {}),
-  }).then(handle);
+  }).then((res) => handle<{ run_id: string }[]>(res));
 
 export const submitDecision = (
   recommendationId: string,
@@ -88,7 +88,7 @@ export const submitDecision = (
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ decision, note: note || null }),
-  }).then(handle);
+  }).then((res) => handle<Decision>(res));
 
 export interface Policy {
   policy_id: string;
@@ -121,7 +121,7 @@ export interface RunListItem {
 }
 
 export const getStats = (): Promise<Stats> =>
-  fetch(`${BASE_URL}/stats`).then(handle);
+  fetch(`${BASE_URL}/stats`).then((res) => handle<Stats>(res));
 
 export const getPolicies = (): Promise<Policy[]> =>
-  fetch(`${BASE_URL}/policies`).then(handle);
+  fetch(`${BASE_URL}/policies`).then((res) => handle<Policy[]>(res));

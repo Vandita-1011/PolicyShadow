@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { submitDecision, type Cluster } from "./api";
 import { useRunPolling } from "./useRunPolling";
 import { Accordion } from "./Accordion";
