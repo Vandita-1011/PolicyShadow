@@ -27,7 +27,7 @@ function ClusterCard({ cluster, onDecided }: { cluster: Cluster; onDecided: () =
 
   return (
     <div className={`card cluster-card risk-${rec.risk_level}`}>
-      <span className="label">{cluster.rule_name}</span>
+      <span className="label" style={{ textTransform: "none" }}>{cluster.rule_name}</span>
       <h3 style={{ marginTop: "0.3rem" }}>{cluster.violation_count} affected workloads</h3>
       <p style={{ margin: "0.6rem 0" }}>
         <strong>{rec.category}</strong>{" "}
